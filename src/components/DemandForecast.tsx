@@ -1,4 +1,5 @@
 import React, { useRef } from 'react';
+import { useEffect, useState } from 'react';
 import zoomPlugin from 'chartjs-plugin-zoom';
 import {
   Chart as ChartJS,
@@ -82,6 +83,17 @@ const DemandForecast: React.FC = () => {
         },
     },
   };
+
+  const [isClient, setIsClient] = useState(false);
+
+  useEffect(() => {
+    // Ensure it only runs on the client-side
+    setIsClient(true);
+  }, []);
+
+  if (!isClient) {
+    return <div>Loading...</div>;  // Show loading if on server-side
+  }
 
   return (
     <div className="w-full max-w-4xl mx-auto">

@@ -1,21 +1,33 @@
 "use client";
+import dynamic from 'next/dynamic';
 import '@/app/globals.css'; // Adjust the path according to your folder structure
-import DemandForecast from '@/components/DemandForecast';
-import FleetDashboard from '@/components/FleetDashboard';
+const DemandForecast = dynamic(() => import('@/components/DemandForecast'), { ssr: false });
+const FleetDashboard = dynamic(() => import('@/components/FleetDashboard'), { ssr: false });
 import { FaChartLine, FaTruck, FaUsers, FaCog, FaSignOutAlt } from 'react-icons/fa';
 import Card from '@/components/Card';
-import { useState } from 'react';
+import { useState,useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 
 const FleetManagerPage = () => {
   const [isSidebarOpen, setIsSidebarOpen] = useState(true);
 
   const toggleSidebar = () => setIsSidebarOpen(!isSidebarOpen);
-  const router = useRouter();  
+  const router = useRouter();
 
   const handleLogout = () => {
     router.push('/login');
   };
+
+  const [isClient, setIsClient] = useState(false);
+
+  useEffect(() => {
+    // This ensures code runs only on the client-side
+    setIsClient(true);
+  }, []);
+
+  if (!isClient) {
+    return <div>Loading...</div>;  // Optionally render a loading state
+  }
 
   return (
     <div className="dashboard flex min-h-screen bg-gray-100">
@@ -50,29 +62,29 @@ const FleetManagerPage = () => {
       <main className="flex-1 flex flex-col">
         {/* Top Navbar */}
         <header className="bg-white shadow-md p-4 flex justify-between items-center">
-        <div style={{
-  fontSize: '2rem',  // A bit smaller for a professional appearance
-  fontWeight: '600',  // Slightly bold for a clean, professional look
-  color: '#333',  // A more neutral and professional color
-  flexGrow: 1,
-  textAlign: 'left',
-  marginLeft: '1.5rem',  // Keeps the margin for spacing
-  letterSpacing: '0.5px',  // Adds slight spacing between letters for better readability
-  lineHeight: '1.25',  // Adds spacing between lines for better visual balance
-}}>
-  Fleet Manager Dashboard
-</div>
-
-
-
-
-
-  <button onClick={handleLogout} style={{ width: '120px' }} className="flex items-center bg-blue-600 text-white px-3 py-1 rounded-md hover:bg-blue-700 transition-all text-sm">
-    <FaSignOutAlt className="mr-2" />
-    Logout
-  </button>
-</header>
-
+          <div
+            style={{
+              fontSize: '2rem', // A bit smaller for a professional appearance
+              fontWeight: '600', // Slightly bold for a clean, professional look
+              color: '#333', // A more neutral and professional color
+              flexGrow: 1,
+              textAlign: 'left',
+              marginLeft: '1.5rem', // Keeps the margin for spacing
+              letterSpacing: '0.5px', // Adds slight spacing between letters for better readability
+              lineHeight: '1.25', // Adds spacing between lines for better visual balance
+            }}
+          >
+            Fleet Manager Dashboard
+          </div>
+          <button
+            onClick={handleLogout}
+            style={{ width: '120px' }}
+            className="flex items-center bg-blue-600 text-white px-3 py-1 rounded-md hover:bg-blue-700 transition-all text-sm"
+          >
+            <FaSignOutAlt className="mr-2" />
+            Logout
+          </button>
+        </header>
 
         {/* Dashboard Content */}
         <div className="p-6 space-y-8">
